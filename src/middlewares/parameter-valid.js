@@ -17,11 +17,11 @@ const validate = (obj, key, opts = { required: true }) => {
 	}
 
 	if (opts.notEmpty && Validator.empty(value)) {
-		return Validator.string(opts.notEmpty) ? opts.notEmpty : `${key} mustn't be empty.`
+		return Validator.string(opts.notEmpty) ? opts.notEmpty : `${key} mustn't be empty.`;
 	}
 
 	if (opts.pattern && !opts.pattern.test(value)) {
-		return `Invalidate ${key}.`
+		return `Invalidate ${key}.`;
 	}
 };
 
