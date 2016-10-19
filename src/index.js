@@ -7,7 +7,7 @@ import onerror from 'koa-onerror';
 import bodyparser from 'koa-bodyparser';
 import session from 'koa-session-store';
 
-const configPath = process.env.NODE_ENV === 'development' ? '../bin/dev.config.js' : '../bin/prod.config.js';
+const configPath = process.env.NODE_ENV === 'development' ? '../bin/dev.config.js' : '../bin/dev.config.js';
 const CONFIG = require(configPath);
 
 const app = new Koa();
