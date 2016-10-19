@@ -62,16 +62,9 @@ const updatePromise2 = (port, password) => {
 				if (error) {
 					reject({ result: false, error });
 				}
-				stream.on('close', (code, signal) => {
-					console.log('close connect');
-					connect.end();
-				}).on('data', data => {
-					const qrcodeStr = new Buffer(`rc4-md5:ss${password}@${server.host}:${port}`).toString('base64');
-					resolve({ result: true, qrcodeStr });
-				}).stderr.on('data', data => {
-					console.log(`error:${data.toString()}`);
-					reject({ result: false, error: data.toString() });
-				});
+
+				const qrcodeStr = new Buffer(`rc4-md5:ss${password}@${server.host}:${port}`).toString('base64');
+				resolve({ result: true, qrcodeStr });
 			});
 		});
 	});

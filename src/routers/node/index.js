@@ -13,9 +13,19 @@ import ParameterValidator from '../../middlewares/parameter-valid';
 
 // 节点列表
 router.get('nodes', accountAuth.user, async function(ctx, next) {
+	const user = ctx.session.user;
 	const nodes = await Node.getList({ state: true }).catch(error => ctx.customResponse(error.message));
 
-	ctx.customResponse.success(nodes);
+	const resultNodes = nodes.map(node => {
+		return {
+			id: node._id,
+			name: node.name,
+			host: node.host,
+			protocol: node.protocol,
+			URI: '/api/qrcode?context=ss://' + new Buffer(`${node.protocol}:${user.auth}@${node.host}:${user.port}`).toString('base64')
+		};
+	});
+	ctx.customResponse.success(resultNodes);
 });
 
 

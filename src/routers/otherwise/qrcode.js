@@ -8,7 +8,7 @@
 import qrcode from 'qr-image';
 import router from '../router';
 
-router.get('/qrcode', async function(ctx, next) {
+router.get('qrcode', async function(ctx, next) {
 	const context = ctx.query.context || 'context is required';
 	const imageBuffer = qrcode.imageSync(context, { type: 'png' });
 
