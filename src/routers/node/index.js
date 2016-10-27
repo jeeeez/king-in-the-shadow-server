@@ -14,7 +14,7 @@ import ParameterValidator from '../../middlewares/parameter-valid';
 // 节点列表
 router.get('nodes', accountAuth.user, async function(ctx, next) {
 	const user = ctx.session.user;
-	const nodes = await Node.getList({ state: true }).catch(error => ctx.customResponse(error.message));
+	const nodes = await Node.getList({ state: true }).catch(error => ctx.customResponse.error(error.message));
 
 	const resultNodes = nodes.map(node => {
 		return {
@@ -35,7 +35,7 @@ router.post('nodes', //accountAuth.admin,
 	ParameterValidator.body('name', 'host', 'protocol'),
 	async function(ctx, next) {
 		const { name, host, protocol, state = true } = ctx.request.body;
-		const node = await Node.create({ name, host, protocol, state }).catch(error => ctx.customResponse(error.message));
+		const node = await Node.create({ name, host, protocol, state }).catch(error => ctx.customResponse.error(error.message));
 
 		ctx.customResponse.success(node);
 	});

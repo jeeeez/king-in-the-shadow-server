@@ -2,6 +2,8 @@ import router from '../router';
 import uuid from 'node-uuid';
 
 import User from '../../models/user';
+import InvitationCodeModel from '../../models/invitation-code';
+
 import shadowrocksService from '../../services/shadowrocks';
 import Validator from '../../services/validator';
 import ParameterValidator from '../../middlewares/parameter-valid';
@@ -13,13 +15,19 @@ router.post('account/register',
 		password: { required: '密码不能为空！', notEmpty: '密码不能为空！', pattern: /^[\S]{6,12}$/ }
 	}),
 	async function(ctx, next) {
-		const { email, password } = ctx.request.body;
+		const { email, password, invitationCode } = ctx.request.body;
 
 		const count = await User.count({ email }).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
 
 		if (count >= 1) return ctx.customResponse.error(`邮箱 ${email} 已被注册！`);
+
+		// 验证邀请码的有效性
+		if (invitationCode) {
+			const invitationCodeCount = await InvitationCodeModel.count({ code: invitationCode, state: 1 }).catch(error => ctx.customResponse.error(error.message));
+			if (invitationCodeCount === 0) return ctx.customResponse.error('无效的邀请码');
+		}
 
 		// 邮箱验证用的随机字符串签名
 		const signature = uuid.v4().replace(/\-/g, '');
@@ -29,7 +37,10 @@ router.post('account/register',
 		const lastUser = await User.getList().sort({ port: -1 }).limit(1).exec();
 		const lastPort = lastUser.length ? lastUser[0].port + 1 : 8000;
 
-		const user = await User.create({ email, password, createDate, signature, port: lastPort, auth: `ss${lastPort}` }).catch(error => {
+		// 随机 VPN 密码
+		const auth = uuid.v4().split('-')[2] + uuid.v4().split('-')[3].toUpperCase();
+
+		const user = await User.create({ email, password, createDate, signature, port: lastPort, auth }).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
 
@@ -37,6 +48,15 @@ router.post('account/register',
 		const qrcodes = await shadowrocksService.update(lastPort, `ss${lastPort}`).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
+
+		// 更新邀请码状态
+		if (invitationCode) {
+			await InvitationCodeModel.update({ code: invitationCode }, {
+				state: 0,
+				inviteeId: user._id,
+				consumeDate: +new Date()
+			}).catch(error => ctx.customResponse.error(error.message));
+		}
 
 		ctx.session.user = user;
 
@@ -48,7 +68,6 @@ router.post('account/register',
 			auth: user.auth,
 			qrcodes
 		});
-
 	});
 
 

@@ -7,7 +7,10 @@ import onerror from 'koa-onerror';
 import bodyparser from 'koa-bodyparser';
 import session from 'koa-session-store';
 
-const configPath = process.env.NODE_ENV === 'development' ? '../bin/dev.config.js' : '../bin/dev.config.js';
+import log4js from 'koa-log4';
+const logger = log4js.getLogger('app');
+
+const configPath = process.env.NODE_ENV === 'development' ? '../bin/dev.config.js' : '../bin/prod.config.js';
 const CONFIG = require(configPath);
 
 const app = new Koa();
@@ -37,12 +40,12 @@ app.use(ctx => {
 });
 
 app.on('error', function(err, ctx) {
-	console.log(err);
+	logger.error(err);
 });
 
 app.listen(CONFIG.PORT, function(error) {
 	if (error) {
-		return console.log(error);
+		return logger.error(error);
 	}
 	console.log(`Listening at http://localhost:${CONFIG.PORT}`);
 });
