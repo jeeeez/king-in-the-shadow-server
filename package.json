@@ -4,10 +4,10 @@
 	"description": "ShadowKing 用户管理系统",
 	"main": "index.js",
 	"scripts": {
-		"start": "NODE_ENV=development supervisor -w 'src,bin/start.js' -e 'js|xtpl' --debug bin/start.js & eslint src/**/*.js",
-		"start22": "NODE_ENV=development node bin/start.js & eslint src/**/*.js",
+		"start": "NODE_ENV=development supervisor -n -w 'src,bin/start.js' -e 'js|xtpl' --debug bin/start.js & eslint src/**/*.js",
+		"once": "NODE_ENV=development node bin/start.js & eslint src/**/*.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"qrcode": "node-qrcode 'hi i want a qrcode'"
+		"server": "forever bin/start.js"
 	},
 	"keywords": [
 		"shadow",
