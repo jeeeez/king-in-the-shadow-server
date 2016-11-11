@@ -1,55 +1,55 @@
 {
-  "name": "king-in-the-shadow",
-  "version": "1.0.0",
-  "description": "ShadowKing 用户管理系统",
-  "main": "index.js",
-  "scripts": {
-    "start": "NODE_ENV=development supervisor -n -w 'src,bin/start.js' -e 'js|xtpl' --debug bin/start.js & eslint src/**/*.js",
-    "once": "NODE_ENV=development node bin/start.js & eslint src/**/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "forever bin/start.js"
-  },
-  "keywords": [
-    "shadow",
-    "king",
-    "shadowsocks"
-  ],
-  "author": "Picker Lee",
-  "license": "ISC",
-  "dependencies": {
-    "babel-core": "^6.9.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.14.0",
-    "co": "^4.6.0",
-    "co-fs": "^1.2.0",
-    "colors": "^1.1.2",
-    "koa": "^2.0.0-alpha.7",
-    "koa-bodyparser": "^2.0.1",
-    "koa-convert": "^1.2.0",
-    "koa-json": "^1.1.1",
-    "koa-log4": "^2.0.2",
-    "koa-onerror": "^1.2.1",
-    "koa-router": "^7.0.1",
-    "koa-session": "^3.3.1",
-    "koa-session-store": "^2.0.0",
-    "koa-static": "^2.0.0",
-    "koa-views": "^5.0.1",
-    "mongoose": "^4.6.0",
-    "node-fetch": "^1.5.3",
-    "node-qrcode": "^0.0.4",
-    "node-uuid": "^1.4.7",
-    "qr-image": "^3.1.0",
-    "shadowrocks": "https://github.com/li2274221/shadowrocks.git#master",
-    "ssh2": "^0.5.2",
-    "whatwg-fetch": "^0.11.0",
-    "xtemplate": "^4.5.1",
-    "xtpl": "^3.2.0"
-  },
-  "devDependencies": {
-    "babel-eslint": "^6.1.2",
-    "eslint": "^3.5.0"
-  }
+	"name": "king-in-the-shadow",
+	"version": "1.0.0",
+	"description": "ShadowKing 用户管理系统",
+	"main": "index.js",
+	"scripts": {
+		"start": "NODE_ENV=development supervisor -n -w 'src,bin/start.js' -e 'js|xtpl' --debug bin/start.js & eslint src/**/*.js",
+		"once": "NODE_ENV=development node bin/start.js & eslint src/**/*.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"server": "forever start -l /root/forever-logfile.log -o /root/forever-outfile.log -e /root/forever-error.log  bin/start.js"
+	},
+	"keywords": [
+		"shadow",
+		"king",
+		"shadowsocks"
+	],
+	"author": "Picker Lee",
+	"license": "ISC",
+	"dependencies": {
+		"babel-core": "^6.9.1",
+		"babel-plugin-transform-decorators-legacy": "^1.3.4",
+		"babel-polyfill": "^6.13.0",
+		"babel-preset-es2015": "^6.9.0",
+		"babel-preset-stage-0": "^6.5.0",
+		"babel-register": "^6.14.0",
+		"co": "^4.6.0",
+		"co-fs": "^1.2.0",
+		"colors": "^1.1.2",
+		"koa": "^2.0.0-alpha.7",
+		"koa-bodyparser": "^2.0.1",
+		"koa-convert": "^1.2.0",
+		"koa-json": "^1.1.1",
+		"koa-log4": "^2.0.2",
+		"koa-onerror": "^1.2.1",
+		"koa-router": "^7.0.1",
+		"koa-session": "^3.3.1",
+		"koa-session-store": "^2.0.0",
+		"koa-static": "^2.0.0",
+		"koa-views": "^5.0.1",
+		"mongoose": "^4.6.0",
+		"node-fetch": "^1.5.3",
+		"node-qrcode": "^0.0.4",
+		"node-uuid": "^1.4.7",
+		"qr-image": "^3.1.0",
+		"shadowrocks": "https://github.com/li2274221/shadowrocks.git#master",
+		"ssh2": "^0.5.2",
+		"whatwg-fetch": "^0.11.0",
+		"xtemplate": "^4.5.1",
+		"xtpl": "^3.2.0"
+	},
+	"devDependencies": {
+		"babel-eslint": "^6.1.2",
+		"eslint": "^3.5.0"
+	}
 }
