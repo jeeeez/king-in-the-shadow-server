@@ -7,7 +7,7 @@
 		"start": "NODE_ENV=development supervisor -n -w 'src,bin/start.js' -e 'js|xtpl' --debug bin/start.js & eslint src/**/*.js",
 		"once": "NODE_ENV=development node bin/start.js & eslint src/**/*.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"server": "forever start -l /root/forever-logfile.log -o /root/forever-outfile.log -e /root/forever-error.log  bin/start.js"
+		"server": "forever start -l /root/www.feijiang.com/logfile.log -o /root/www.feijiang.com/outfile.log -e /root/www.feijiang.com/error.log  bin/start.js"
 	},
 	"keywords": [
 		"shadow",
