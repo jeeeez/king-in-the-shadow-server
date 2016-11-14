@@ -11,7 +11,8 @@ const schema = new Schema({
 	createDate: Number,
 	validateDate: Number,
 	port: Number,
-	auth: String
+	auth: String,
+	role: String
 }, { collection: 'users' });
 
 

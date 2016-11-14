@@ -13,6 +13,9 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
 	name: String,
 	host: String,
+	port: Number,
+	username: String,
+	privateKeyPath: String,
 	protocol: String,
 	state: Boolean,
 	createDate: Number

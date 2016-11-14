@@ -32,6 +32,7 @@ router.post('account/login',
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
-			auth: user.auth
+			auth: user.auth,
+			role: user.role
 		});
 	});
