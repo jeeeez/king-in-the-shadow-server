@@ -19,7 +19,7 @@ const schema = new Schema({
 	protocol: String,
 	state: Boolean,
 	createDate: Number
-}, { collection: ' nodes' });
+}, { collection: 'nodes' });
 
 
 const NodeModel = mongoose.model('node', schema);
