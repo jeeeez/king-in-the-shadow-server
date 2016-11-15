@@ -27,4 +27,5 @@ const NodeModel = mongoose.model('node', schema);
 @Decorator.create(NodeModel)
 @Decorator.update(NodeModel)
 @Decorator.getList(NodeModel)
+@Decorator.count(NodeModel)
 export default new class Node {}();

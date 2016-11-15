@@ -39,4 +39,5 @@ const getList = Constructor => {
 		target.prototype.getList = (params, opts) => Constructor.find(params, null, opts);
 	};
 };
+
 export default { instance, count, create, save, update, get, getList };

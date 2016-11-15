@@ -15,7 +15,9 @@ const accountAuth = {
 	},
 	admin: (ctx, next) => {
 		// 验证管理员之前需要先验证是否登录
-		this.user(ctx, next);
+		if (!ctx.session.user) {
+			return ctx.customResponse.error('请登录！', 401);
+		}
 
 		if (ctx.session.user.role !== 'admin') {
 			return ctx.customResponse.error('权限不足', 500);
