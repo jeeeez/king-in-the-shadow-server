@@ -21,6 +21,15 @@ const exec = require('child_process').exec;
 
 let ServerList;
 
+const makeServerSSHConfig = server => {
+	return {
+		host: server.host,
+		port: server.port,
+		username: server.username,
+		privateKey: require('fs').readFileSync(server.privateKeyPath).toString()
+	};
+};
+
 // 获取VPN服务器列表
 const fetchServerList = (refresh = false) => {
 	if (!refresh && ServerList) {
@@ -28,12 +37,7 @@ const fetchServerList = (refresh = false) => {
 	}
 	return Node.getList({ available: 1 }).then(servers => {
 		ServerList = servers.map(server => {
-			return {
-				host: server.host,
-				port: server.port,
-				username: server.username,
-				privateKey: require('fs').readFileSync(server.privateKeyPath).toString()
-			};
+			return makeServerSSHConfig(server);
 		});
 	}).catch(error => console.log(error));
 };
@@ -42,14 +46,15 @@ const fetchServerList = (refresh = false) => {
 const initializeServer = serverId => {
 	return Node.get({ _id: serverId }).then(server => {
 		if (!server) return Promise.reject({ message: '服务器不存在' });
-		if (!server.available) return Promise.reject({ message: '服务器不可用' });
+		if (!server.state) return Promise.reject({ message: '服务器不可用' });
 
-		return User.getList({ validated: true }).then(users => {
-			const config = users.reduce((prev, current) => {
-				prev[current.port] = current.auth;
-			}, {});
+		return User.getList({}).then(users => {
+			const config = {};
+			users.forEach(user => {
+				config[user.port] = user.auth;
+			});
 
-			return executeShadowsocksBash(server, `node /root/shadowrocks/initialize.js ${JSON.stringify(config)}`);
+			return executeShadowsocksBash(server, `node /root/shadowrocks/initialize.js '${JSON.stringify(config)}'`);
 		});
 	});
 };
@@ -57,13 +62,14 @@ const initializeServer = serverId => {
 fetchServerList();
 
 const executeShadowsocksBash = (server, commandStr) => {
+	const serverSSHConfig = makeServerSSHConfig(server);
 	return new Promise((resolve, reject) => {
 		const connect = new SSH2.Client();
 		connect.on('ready', () => {
 			// 请确保目标服务器已下载好配置脚本
 			connect.exec(commandStr, (error, stream) => {
 				if (error) {
-					reject({ result: false, error });
+					return reject(error);
 				}
 				stream.on('close', (code, signal) => {
 					console.log('close connect');
@@ -72,10 +78,12 @@ const executeShadowsocksBash = (server, commandStr) => {
 					resolve({ result: true });
 				}).stderr.on('data', data => {
 					console.log(`error:${data.toString()}`);
-					reject({ result: false, error: data.toString() });
+					reject({ message: data.toString() });
 				});
 			});
-		}).connect(server);
+		}).on('error', error => {
+			reject(error);
+		}).connect(serverSSHConfig);
 	});
 };
 
@@ -121,7 +129,6 @@ const updatePromise2 = (port, password) => {
 		});
 	});
 };
-
 
 export default {
 	fetchServerList,

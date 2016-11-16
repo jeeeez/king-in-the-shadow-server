@@ -32,7 +32,7 @@ const validatorCreator = type => {
 			if (type === 'body') {
 				obj = ctx.request.body || {};
 			} else if (type === 'params') {
-				obj = ctx.request.params || {};
+				obj = ctx.params || {};
 			}
 			const messages = [];
 

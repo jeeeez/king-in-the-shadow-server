@@ -87,17 +87,19 @@ router.put('node/:nodeId', accountAuth.admin,
 
 		await Node.update({ _id: ctx.params.nodeId }, updateObj).catch(error => ctx.customResponse.error(error.message));
 
-		ctx.customResponse.success(`注册成功`);
+		ctx.customResponse.success(`修改成功`);
 	}
 );
 
-
+// 初始化节点（SS用户列表&配置信息）
 router.post('node/:nodeId/initialize',
 	accountAuth.admin,
 	ParameterValidator.params('nodeId'),
 	async function(ctx, next) {
-		const nodeId = ctx.request.body;
-		await ShadowrocksService(nodeId).catch(error => ctx.customResponse.error(error.message));
+		const nodeId = ctx.params.nodeId;
+
+		const result = await ShadowrocksService.initializeServer(nodeId).catch(error => ctx.customResponse.error(error.message));
+		if (!result || !result.result) return;
 		ctx.customResponse.success('初始化成功');
 	}
 );
