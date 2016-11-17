@@ -9,4 +9,6 @@ import './account/invitation-code';
 import './otherwise/qrcode';
 import './node/index';
 
+import './user/index';
+
 export default router;
