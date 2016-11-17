@@ -24,4 +24,5 @@ const UserModel = mongoose.model('user', schema);
 @Decorator.get(UserModel)
 @Decorator.update(UserModel)
 @Decorator.getList(UserModel)
+@Decorator.ALL(UserModel)
 export default new class User {}();

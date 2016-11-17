@@ -40,4 +40,9 @@ const getList = Constructor => {
 	};
 };
 
-export default { instance, count, create, save, update, get, getList };
+const ALL = Constructor => {
+	return target => {
+
+	};
+};
+export default { instance, count, create, save, update, get, getList, ALL };
