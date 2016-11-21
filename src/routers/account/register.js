@@ -1,6 +1,8 @@
 import router from '../router';
 import uuid from 'node-uuid';
 
+import { md5, generateRamdomString } from '../../services/hash';
+
 import User from '../../models/user';
 import InvitationCodeModel from '../../models/invitation-code';
 
@@ -15,7 +17,8 @@ router.post('account/register',
 		password: { required: '密码不能为空！', notEmpty: '密码不能为空！', pattern: /^[\S]{6,12}$/ }
 	}),
 	async function(ctx, next) {
-		const { email, password, invitationCode } = ctx.request.body;
+		const { email, invitationCode } = ctx.request.body;
+		const password = md5(ctx.request.body.password);
 
 		const count = await User.count({ email }).catch(error => {
 			return ctx.customResponse.error(error.message);
@@ -38,7 +41,7 @@ router.post('account/register',
 		const lastPort = lastUser.length ? lastUser[0].port + 1 : 8000;
 
 		// 随机 VPN 密码
-		const auth = uuid.v4().split('-')[2] + uuid.v4().split('-')[3].toUpperCase();
+		const auth = generateRamdomString(8);
 
 		const user = await User.create({ email, password, createDate, signature, port: lastPort, auth }).catch(error => {
 			return ctx.customResponse.error(error.message);
@@ -58,16 +61,18 @@ router.post('account/register',
 			}).catch(error => ctx.customResponse.error(error.message));
 		}
 
-		ctx.session.user = user;
-
-		ctx.customResponse.success({
+		const currentUser = {
 			id: user._id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
 			qrcodes
-		});
+		};
+
+		ctx.session.user = currentUser;
+
+		ctx.customResponse.success(currentUser);
 	});
 
 

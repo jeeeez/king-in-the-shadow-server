@@ -1,5 +1,7 @@
 import router from '../router';
 
+import { md5 } from '../../services/hash';
+
 import User from '../../models/user';
 import ParameterValidator from '../../middlewares/parameter-valid';
 
@@ -20,19 +22,21 @@ router.post('account/login',
 			return ctx.customResponse.error(`用户 ${email} 不存在`);
 		}
 
-		const user = await User.get({ email, password }).catch(error => ctx.customResponse(error.message));
+		const user = await User.get({ email, password: md5(password) }).catch(error => ctx.customResponse(error.message));
 
 		if (!user) return ctx.customResponse.error(`密码不正确！`);
 
-		// 登录设置用户会话
-		ctx.session.user = user;
-
-		ctx.customResponse.success({
+		const currentUser = {
 			id: user._id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
 			role: user.role
-		});
+		};
+
+		// 登录设置用户会话
+		ctx.session.user = currentUser;
+
+		ctx.customResponse.success(currentUser);
 	});
