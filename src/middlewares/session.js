@@ -22,7 +22,7 @@ export default (ctx, next) => {
 			// 当系统的session个数超出最大阈值，则自动删除最前面的session
 			// 虽然Object中的属性是无序（不可靠）的，但是如果key值为String类型，一般还是会以添加顺序为序
 			const tokens = Object.keys(SESSIONS);
-			if (tokens.length >= = MAX_SESSION_AMOUNT) {
+			if (tokens.length >= MAX_SESSION_AMOUNT) {
 				delete SESSIONS[tokens[0]];
 			}
 
