@@ -5,7 +5,8 @@ import convert from 'koa-convert';
 import json from 'koa-json';
 import onerror from 'koa-onerror';
 import bodyparser from 'koa-bodyparser';
-import session from 'koa-session-store';
+
+import session from './middlewares/session';
 
 import log4js from 'koa-log4';
 const logger = log4js.getLogger('app');
@@ -19,7 +20,8 @@ app.keys = ['user'];
 // middlewares
 app.use(convert(bodyparser()));
 app.use(convert(json()));
-app.use(convert(session(app)));
+// app.use(convert(session(app)));
+app.use(session);
 
 // 环境中间件
 CONFIG.middlewares(app);

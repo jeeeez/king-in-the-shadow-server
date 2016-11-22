@@ -38,5 +38,5 @@ router.post('account/login',
 		// 登录设置用户会话
 		ctx.session.user = currentUser;
 
-		ctx.customResponse.success(currentUser);
+		ctx.customResponse.success({...currentUser, token: ctx.session.token });
 	});

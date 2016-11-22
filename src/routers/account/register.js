@@ -72,7 +72,7 @@ router.post('account/register',
 
 		ctx.session.user = currentUser;
 
-		ctx.customResponse.success(currentUser);
+		ctx.customResponse.success({...currentUser, token: ctx.session.token });
 	});
 
 
