@@ -3,28 +3,19 @@ import path from 'path';
 import Koa from 'koa';
 import convert from 'koa-convert';
 import json from 'koa-json';
-import onerror from 'koa-onerror';
 import bodyparser from 'koa-bodyparser';
 
 import session from './middlewares/session';
-
-import log4js from 'koa-log4';
-const logger = log4js.getLogger('app');
 
 const configPath = process.env.NODE_ENV === 'development' ? '../bin/dev.config.js' : '../bin/prod.config.js';
 const CONFIG = require(configPath);
 
 const app = new Koa();
-app.keys = ['user'];
 
 // middlewares
 app.use(convert(bodyparser()));
 app.use(convert(json()));
-// app.use(convert(session(app)));
 app.use(session);
-
-// 环境中间件
-CONFIG.middlewares(app);
 
 import customResponse from './middlewares/response';
 app.use(customResponse);
@@ -32,6 +23,8 @@ app.use(customResponse);
 import router from './routers/index';
 app.use(router.routes()).use(router.allowedMethods());
 
+// http请求错误日志
+app.use(CONFIG.middlewares.logger);
 
 app.use(ctx => {
 	if (ctx.path === '/favicon.ico') return;
@@ -42,12 +35,12 @@ app.use(ctx => {
 });
 
 app.on('error', function(err, ctx) {
-	logger.error(err);
+	console.error(err);
 });
 
 app.listen(CONFIG.PORT, function(error) {
 	if (error) {
-		return logger.error(error);
+		return console.error(error);
 	}
 	console.log(`Listening at http://localhost:${CONFIG.PORT}`);
 });
