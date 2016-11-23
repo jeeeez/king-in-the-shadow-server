@@ -19,8 +19,17 @@ export default (ctx, next) => {
 		},
 
 		set user(session) {
+			// 如果session为空则表示删除当前token对应的session
+			if (!session) {
+				const token = ctx.headers['king-token'];
+				if (!token) return;
+
+				delete SESSIONS[token];
+				return;
+			}
 			// 当系统的session个数超出最大阈值，则自动删除最前面的session
 			// 虽然Object中的属性是无序（不可靠）的，但是如果key值为String类型，一般还是会以添加顺序为序
+			// --TODO:为session设置最后使用时间，按该时间的倒序排序，优先删除最久没使用的session
 			const tokens = Object.keys(SESSIONS);
 			if (tokens.length >= MAX_SESSION_AMOUNT) {
 				delete SESSIONS[tokens[0]];
