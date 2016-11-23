@@ -61,18 +61,17 @@ router.post('account/register',
 			}).catch(error => ctx.customResponse.error(error.message));
 		}
 
-		const currentUser = {
+		ctx.session.user = user;
+
+		ctx.customResponse.success({
 			id: user._id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
-			qrcodes
-		};
-
-		ctx.session.user = currentUser;
-
-		ctx.customResponse.success({...currentUser, token: ctx.session.token });
+			qrcodes,
+			token: ctx.session.token
+		});
 	});
 
 

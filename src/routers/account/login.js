@@ -26,17 +26,16 @@ router.post('account/login',
 
 		if (!user) return ctx.customResponse.error(`密码不正确！`);
 
-		const currentUser = {
+		// 登录设置用户会话
+		ctx.session.user = user;
+
+		ctx.customResponse.success({
 			id: user._id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
-			role: user.role
-		};
-
-		// 登录设置用户会话
-		ctx.session.user = currentUser;
-
-		ctx.customResponse.success({...currentUser, token: ctx.session.token });
+			role: user.role,
+			token: ctx.session.token
+		});
 	});

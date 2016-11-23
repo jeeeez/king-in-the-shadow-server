@@ -4,8 +4,7 @@ import User from '../../models/user';
 
 // 查看用户登录状态
 router.get('account/check', async function(ctx, next) {
-
-	// 登录设置用户会话
+	// 当前用户会话信息
 	const user = ctx.session.user;
 	if (!user) return ctx.customResponse.success('未登录');
 
