@@ -6,7 +6,7 @@ import { md5, generateRamdomString } from '../../services/hash';
 import User from '../../models/user';
 import InvitationCodeModel from '../../models/invitation-code';
 
-import shadowrocksService from '../../services/shadowrocks';
+import ShadowrocksService from '../../services/shadowrocks';
 import Validator from '../../services/validator';
 import ParameterValidator from '../../middlewares/parameter-valid';
 
@@ -38,17 +38,19 @@ router.post('account/register',
 
 		// 获取当前最大的端口号
 		const lastUser = await User.getList().sort({ port: -1 }).limit(1).exec();
-		const lastPort = lastUser.length ? lastUser[0].port + 1 : 8000;
+		const lastPort = lastUser.length ? lastUser[0].port : 8000;
+
+		const port = lastPort + 1;
 
 		// 随机 VPN 密码
 		const auth = generateRamdomString(8);
 
-		const user = await User.create({ email, password, createDate, signature, port: lastPort, auth }).catch(error => {
+		const user = await User.create({ email, password, createDate, signature, port, auth }).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
 
 		// 为用户开通 shadowrocks 账户
-		const qrcodes = await shadowrocksService.update(lastPort, `ss${lastPort}`).catch(error => {
+		const qrcodes = await ShadowrocksService.updateOnePort(port, auth).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
 
