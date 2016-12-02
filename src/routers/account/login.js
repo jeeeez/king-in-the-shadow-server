@@ -22,7 +22,7 @@ router.post('account/login',
 			return ctx.customResponse.error(`用户 ${email} 不存在`);
 		}
 
-		const user = await User.get({ email, password: md5(password) }).catch(error => ctx.customResponse(error.message));
+		const user = await User.get({ email, password: md5(password) }).catch(error => ctx.customResponse.error(error.message));
 
 		if (!user) return ctx.customResponse.error(`密码不正确！`);
 
