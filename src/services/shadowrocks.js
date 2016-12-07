@@ -9,8 +9,6 @@ import SSH2 from 'ssh2';
 import Node from '../models/node';
 import User from '../models/user';
 
-const exec = require('child_process').exec;
-
 let ServerList;
 
 const makeServerSSHConfig = server => {
