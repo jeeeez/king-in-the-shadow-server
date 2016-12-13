@@ -19,6 +19,8 @@ router.get('nodes', accountAuth.user, async function(ctx, next) {
 	const user = ctx.session.user;
 	const nodes = await Node.getList(condition).catch(error => ctx.customResponse.error(error.message));
 
+	if (nodes === undefined) return;
+
 	const resultNodes = nodes.map(node => {
 		return {
 			id: node._id,

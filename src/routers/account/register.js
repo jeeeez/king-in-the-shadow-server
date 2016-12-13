@@ -24,11 +24,16 @@ router.post('account/register',
 			return ctx.customResponse.error(error.message);
 		});
 
+		if (count === undefined) return;
+
 		if (count >= 1) return ctx.customResponse.error(`邮箱 ${email} 已被注册！`);
 
 		// 验证邀请码的有效性
 		if (invitationCode) {
 			const invitationCodeCount = await InvitationCodeModel.count({ code: invitationCode, state: 1 }).catch(error => ctx.customResponse.error(error.message));
+
+			if (invitationCodeCount === undefined) return;
+
 			if (invitationCodeCount === 0) return ctx.customResponse.error('无效的邀请码');
 		}
 
@@ -38,6 +43,7 @@ router.post('account/register',
 
 		// 获取当前最大的端口号
 		const lastUser = await User.getList().sort({ port: -1 }).limit(1).exec();
+		if (lastUser === undefined) return;
 		const lastPort = lastUser.length ? lastUser[0].port : 8000;
 
 		const port = lastPort + 1;
@@ -48,11 +54,13 @@ router.post('account/register',
 		const user = await User.create({ email, password, createDate, signature, port, auth }).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
+		if (user === undefined) return;
 
 		// 为用户开通 shadowrocks 账户
 		const qrcodes = await ShadowrocksService.updateOnePort(port, auth).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
+		if (qrcodes === undefined) return;
 
 		// 更新邀请码状态
 		if (invitationCode) {

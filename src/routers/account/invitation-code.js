@@ -17,6 +17,8 @@ router.get('account/invitation-codes', accountAuth.user, async function(ctx, nex
 		createDate: { $gt: todayStart, $lt: todayEnd }
 	}).catch(error => ctx.customResponse.error(error.message));
 
+	if (!invitationCodes) return;
+
 	ctx.customResponse.success(invitationCodes.map(invitationCode => {
 		return {
 			code: invitationCode.code,
