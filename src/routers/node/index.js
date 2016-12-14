@@ -17,7 +17,7 @@ router.get('nodes', accountAuth.user, async function(ctx, next) {
 	const condition = { state: true, ...ctx.request.params };
 
 	const user = ctx.session.user;
-	const nodes = await Node.getList(condition).sort({ sort: -1 }).exec().catch(error => ctx.customResponse.error(error.message));
+	const nodes = await Node.getList(condition).sort({ sort: 1 }).exec().catch(error => ctx.customResponse.error(error.message));
 
 	if (nodes === undefined) return;
 
@@ -31,6 +31,7 @@ router.get('nodes', accountAuth.user, async function(ctx, next) {
 			privateKeyPath: node.privateKeyPath,
 			state: node.state,
 			protocol: node.protocol,
+			sort: node.sort,
 			URI: '/api/qrcode?context=ss://' + new Buffer(`${node.protocol}:${user.auth}@${node.host}:${user.port}`).toString('base64')
 		};
 	});
