@@ -1,6 +1,6 @@
 /**
  * 二维码接口
- * @authors Picker Lee (https://github.com/li2274221)
+ * @authors Picker Lee (https://github.com/pickerlee)
  * @email   450994392@qq.com
  * @date    2016-10-08 22:26:24
  */

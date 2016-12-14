@@ -1,6 +1,6 @@
 /**
  * 字符串加密
- * @authors Picker Lee (https://github.com/li2274221)
+ * @authors Picker Lee (https://github.com/pickerlee)
  * @email   450994392@qq.com
  * @date    2016-11-21 20:14:31
  */

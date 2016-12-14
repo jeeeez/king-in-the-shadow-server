@@ -1,6 +1,6 @@
 /**
  * 验证接口参数的合理性
- * @authors Picker Lee (https://github.com/li2274221)
+ * @authors Picker Lee (https://github.com/pickerlee)
  * @email   450994392@qq.com
  * @date    2016-10-09 14:13:15
  */
