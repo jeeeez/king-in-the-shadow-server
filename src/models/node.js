@@ -18,7 +18,8 @@ const schema = new Schema({
 	privateKeyPath: String,
 	protocol: String,
 	state: Boolean,
-	createDate: Number
+	createDate: Number,
+	sort: Number
 }, { collection: 'nodes' });
 
 

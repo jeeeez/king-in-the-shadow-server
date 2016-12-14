@@ -17,7 +17,7 @@ router.get('nodes', accountAuth.user, async function(ctx, next) {
 	const condition = { state: true, ...ctx.request.params };
 
 	const user = ctx.session.user;
-	const nodes = await Node.getList(condition).catch(error => ctx.customResponse.error(error.message));
+	const nodes = await Node.getList(condition).sort({ sort: -1 }).exec().catch(error => ctx.customResponse.error(error.message));
 
 	if (nodes === undefined) return;
 
@@ -46,7 +46,7 @@ router.post('nodes',
 	async function(ctx, next) {
 		const user = ctx.session.user;
 
-		const { name, host, port, username, protocol, privateKeyPath, state = true } = ctx.request.body;
+		const { name, host, port, username, protocol, privateKeyPath, sort, state = true } = ctx.request.body;
 
 		// 判断是否已有同名或相同IP的服务器
 		const count = await Node.count({ $or: [{ name }, { host }] }).catch(error => ctx.customResponse.error(error.message));
@@ -54,7 +54,7 @@ router.post('nodes',
 			return ctx.customResponse.error('已有相同名称或IP的服务器存在，不可重复添加');
 		}
 
-		const node = await Node.create({ name, host, port, username, protocol, privateKeyPath, state }).catch(error => ctx.customResponse.error(error.message));
+		const node = await Node.create({ name, host, port, username, protocol, privateKeyPath, state, sort }).catch(error => ctx.customResponse.error(error.message));
 
 		ctx.customResponse.success({
 			id: node._id,
@@ -82,7 +82,7 @@ router.put('node/:nodeId', accountAuth.admin,
 
 		const updateObj = {};
 		Object.keys(ctx.request.body).forEach(curr => {
-			if (~['name', 'host', 'port', 'username', 'protocol', 'privateKeyPath'].indexOf(curr)) {
+			if (~['name', 'host', 'port', 'username', 'protocol', 'privateKeyPath', 'sort'].indexOf(curr)) {
 				updateObj[curr] = ctx.request.body[curr];
 			}
 		});
