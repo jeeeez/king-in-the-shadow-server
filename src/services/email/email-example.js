@@ -3,12 +3,12 @@ var nodemailer = require('nodemailer');
 
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
-	"host": "smtpdm.aliyun.com",
-	"port": 25,
-	"secureConnection": true, // use SSL
-	"auth": {
-		"user": 'noreply@fjvpn.com', // user name
-		"pass": 'ALIyun5383139' // password
+	'host': 'smtpdm.aliyun.com',
+	'port': 25,
+	'secureConnection': true, // use SSL
+	'auth': {
+		'user': 'noreply@fjvpn.com', // user name
+		'pass': 'ALIyun5383139' // password
 	}
 });
 
@@ -25,11 +25,11 @@ var mailOptions = {
 	text: 'Hello world', // plaintext body
 	html: `
 			<div>
-			    <div style="float:left;width:200px;font-size:30px;color:green;">
+			    <div style='float:left;width:200px;font-size:30px;color:green;'>
 			        非匠VPN
 			    </div>
-			    <div style="margin-left:200px;border-left:2px solid #b2b2b2;">
-			        <p style="line-height:30px;color:#b2b2b2;font-size:14px;">
+			    <div style='margin-left:200px;border-left:2px solid #b2b2b2;'>
+			        <p style='line-height:30px;color:#b2b2b2;font-size:14px;'>
 			            本邮件内容由系统自动发送，请勿直接回复
 			        </p>
 			    </div>
