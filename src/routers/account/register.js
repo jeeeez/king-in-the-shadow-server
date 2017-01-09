@@ -1,6 +1,8 @@
 import router from '../router';
 import uuid from 'node-uuid';
 
+import EmailSender from '../../services/email/index.js';
+
 import { md5, generateRamdomString } from '../../services/hash';
 
 import User from '../../models/user';
@@ -71,6 +73,11 @@ router.post('account/register',
 			}).catch(error => ctx.customResponse.error(error.message));
 		}
 
+		// 发送注册邮件
+		const emailHTML = `<p>尊敬的用户，您好</p>
+						<p>欢迎使用非匠VPN服务，点击<a href="http://www.fjvpn.com/api/account/${signature}/validate">链接</a>即可完成非匠的注册！</p>`;
+		EmailSender.sender(email, '用户注册', emailHTML);
+
 		ctx.session.user = user;
 
 		ctx.customResponse.success({
@@ -86,10 +93,10 @@ router.post('account/register',
 
 
 // 用户邮箱验证
-router.get('/account/:signature/validate', async function(ctx, next) {
+router.get('account/:signature/validate', async function(ctx, next) {
 	const signature = ctx.params.signature;
 
-	const user = await User.findOne({ signature }).catch(error => {
+	const user = await User.get({ signature }).catch(error => {
 		return ctx.customResponse.error(error.message);
 	});
 
