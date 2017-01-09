@@ -7,12 +7,12 @@ const schema = new Schema({
 	email: String,
 	password: String,
 	signature: String,
-	validated: Boolean,
 	createDate: Number,
+	validated: Boolean,
 	validateDate: Number,
 	port: Number,
 	auth: String,
-	role: String
+	role: { type: String, default: 'member' }
 }, { collection: 'users' });
 
 
