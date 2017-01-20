@@ -43,26 +43,10 @@ router.post('account/register',
 		const signature = uuid.v4().replace(/\-/g, '');
 		const createDate = +new Date();
 
-		// 获取当前最大的端口号
-		const lastUser = await User.getList().sort({ port: -1 }).limit(1).exec();
-		if (lastUser === undefined) return;
-		const lastPort = lastUser.length ? lastUser[0].port : 8000;
-
-		const port = lastPort + 1;
-
-		// 随机 VPN 密码
-		const auth = generateRamdomString(8);
-
-		const user = await User.create({ email, password, createDate, signature, port, auth }).catch(error => {
+		const user = await User.create({ email, password, createDate, signature }).catch(error => {
 			return ctx.customResponse.error(error.message);
 		});
 		if (user === undefined) return;
-
-		// 为用户开通 shadowrocks 账户
-		const qrcodes = await ShadowrocksService.updateOnePort(port, auth).catch(error => {
-			return ctx.customResponse.error(error.message);
-		});
-		if (qrcodes === undefined) return;
 
 		// 更新邀请码状态
 		if (invitationCode) {
@@ -86,7 +70,6 @@ router.post('account/register',
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
-			qrcodes,
 			token: ctx.session.token
 		});
 	});
@@ -104,10 +87,27 @@ router.get('account/:signature/validate', async function(ctx, next) {
 
 	if (user.validated) return ctx.customResponse.error('当前账户已验证成功！');
 
+	// 获取当前最大的端口号
+	const lastUser = await User.getList().sort({ port: -1 }).limit(1).exec();
+	if (lastUser === undefined) return;
+	const lastPort = lastUser.length ? lastUser[0].port : 8000;
+
+	const port = lastPort + 1;
+
+	// 随机 VPN 密码
+	const auth = generateRamdomString(8);
+
 	await User.update({ _id: user._id }, {
+		port,
+		auth,
 		validated: true,
 		validateDate: +new Date()
-	}).catch(error => ctx.customResponse.error(error.message));
+	}).then(() => {
+		ctx.customResponse.success('注册成功');
 
-	ctx.customResponse.success(`注册成功`);
+		// 为用户开通 shadowrocks 账户
+		ShadowrocksService.updateOnePort(port, auth).catch(error => {
+			// return ctx.customResponse.error(error);
+		});
+	}).catch(error => ctx.customResponse.error(error.message));
 });
