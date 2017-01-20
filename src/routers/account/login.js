@@ -30,6 +30,8 @@ router.post('account/login',
 
 		if (!user) return ctx.customResponse.error(`密码不正确！`);
 
+		if (!user.validated) return ctx.customResponse.error(`账户邮箱未验证`);
+
 		// 登录设置用户会话
 		ctx.session.user = user;
 
