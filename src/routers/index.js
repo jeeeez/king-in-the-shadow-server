@@ -12,5 +12,7 @@ import './node/index';
 
 import './user/index';
 
+import './plan/index';
+
 
 export default router;
