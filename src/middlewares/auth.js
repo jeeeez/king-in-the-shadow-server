@@ -5,6 +5,8 @@
  * @date    2016-10-09 13:34:38
  */
 
+import G from '../constants/index';
+
 const accountAuth = {
 	user: (ctx, next) => {
 		// 验证当前用户是否登录
@@ -19,7 +21,19 @@ const accountAuth = {
 			return ctx.customResponse.error('请登录！', 401);
 		}
 
-		if (ctx.session.user.role !== 'admin') {
+		if (ctx.session.user.role !== G.accountRoles.admin &&
+			ctx.session.user.role !== G.accountRoles.superAdmin) {
+			return ctx.customResponse.error('权限不足', 500);
+		}
+		return next();
+	},
+	superAdmin: (ctx, next) => {
+		// 验证管理员之前需要先验证是否登录
+		if (!ctx.session.user) {
+			return ctx.customResponse.error('请登录！', 401);
+		}
+
+		if (ctx.session.user.role !== G.accountRoles.superAdmin) {
 			return ctx.customResponse.error('权限不足', 500);
 		}
 		return next();
