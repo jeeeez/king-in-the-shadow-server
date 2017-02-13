@@ -54,6 +54,10 @@ router.post('plans',
 
 		const { name, price, month, state = true } = ctx.request.body;
 
+<<<<<<< HEAD
+=======
+		// 判断是否已有同名或相同IP的服务器
+>>>>>>> 添加套餐entity
 		const count = await Plan.count({ name }).catch(error => ctx.customResponse.error(error.message));
 		if (count > 0) {
 			return ctx.customResponse.error('已有相同名称的套餐存在，不可重复添加');
