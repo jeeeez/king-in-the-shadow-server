@@ -3,7 +3,7 @@ import uuid from 'node-uuid';
 import accountAuth from '../../middlewares/auth';
 import InvitationCode from '../../models/invitation-code';
 
-import CONFIG from '../../constants/config';
+import G from '../../constants/index';
 
 // 查看今日邀请码
 router.get('account/invitation-codes', accountAuth.user, async function(ctx, next) {
@@ -44,8 +44,8 @@ router.post('account/invitation-codes', accountAuth.user, async function(ctx, ne
 		createDate: { $gt: todayStart, $lt: todayEnd }
 	}).catch(error => ctx.customResponse.error(error.message));
 
-	if (count >= CONFIG.maxInvitationAmount) {
-		return ctx.customResponse.error(`每日最多能创建${CONFIG.maxInvitationAmount}个邀请码，今日邀请码额度已用完`);
+	if (count >= G.maxInvitationAmount) {
+		return ctx.customResponse.error(`每日最多能创建${G.maxInvitationAmount}个邀请码，今日邀请码额度已用完`);
 	}
 
 	const code = await createInvitationCode().catch(error => ctx.customResponse.error(error.message));
