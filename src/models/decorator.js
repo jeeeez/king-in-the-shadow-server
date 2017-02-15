@@ -42,7 +42,7 @@ const getList = Constructor => {
 
 const ALL = Constructor => {
 	return target => {
-
+		getList(Constructor)(target);
 	};
 };
 export default { instance, count, create, save, update, get, getList, ALL };
