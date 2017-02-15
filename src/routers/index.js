@@ -14,5 +14,7 @@ import './user/index';
 
 import './plan/index';
 
+import './order/index';
+
 
 export default router;
