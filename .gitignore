@@ -1,6 +1,7 @@
 # Logs
-logs
-*.log
+#logs
+#*.log
+#!bin/logs/http.log
 
 .DS_Store
 .idea/
