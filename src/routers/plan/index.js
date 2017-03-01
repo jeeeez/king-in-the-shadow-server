@@ -93,16 +93,3 @@ router.put('plan/:planId', accountAuth.superAdmin,
 		ctx.customResponse.success(`修改成功`);
 	}
 );
-
-// 初始化节点（SS用户列表&配置信息）
-router.post('node/:nodeId/initialize',
-	accountAuth.admin,
-	ParameterValidator.params('nodeId'),
-	async function(ctx, next) {
-		const nodeId = ctx.params.nodeId;
-
-		const result = await ShadowrocksService.initializeServer(nodeId).catch(error => ctx.customResponse.error(error.message));
-		if (!result || !result.result) return;
-		ctx.customResponse.success('初始化成功');
-	}
-);
