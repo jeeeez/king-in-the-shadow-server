@@ -42,6 +42,12 @@ const getList = Constructor => {
 
 const ALL = Constructor => {
 	return target => {
+		instance(Constructor)(target);
+		count(Constructor)(target);
+		create(Constructor)(target);
+		save(Constructor)(target);
+		update(Constructor)(target);
+		get(Constructor)(target);
 		getList(Constructor)(target);
 	};
 };

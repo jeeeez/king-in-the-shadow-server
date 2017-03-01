@@ -19,11 +19,13 @@ import ParameterValidator from '../../middlewares/parameter-valid';
 
 // 所有订单列表
 router.get('orders', accountAuth.user, async function(ctx, next) {
-	const { state, planID, skip, limit } = ctx.request.body;
+	const { state, planID, skip = 0, limit = 10 } = ctx.request.query;
 	// 查询条件
-	const condition = { state, planID };
+	const condition = {};
+	if (state) condition.state = Number(state);
+	if (planID) condition.planID = planID;
 
-	const orders = await Order.getList(condition, { skip, limit }).exec().catch(error => ctx.customResponse.error(error.message));
+	const orders = await Order.getList(condition, { skip: Number(skip), limit: Number(limit) }).exec().catch(error => ctx.customResponse.error(error.message));
 
 	if (orders === undefined) return;
 
@@ -54,11 +56,14 @@ router.get('user/:userID/orders', accountAuth.user, async function(ctx, next) {
 		return ctx.customResponse.error('权限不足');
 	}
 
-	const { state, planID, skip, limit } = ctx.request.body;
+	const { state, planID, skip = 0, limit = 10 } = ctx.request.query;
 	// 查询条件
-	const condition = { userID, state, planID };
+	const condition = {};
+	if (userID) condition.userID = userID;
+	if (planID) condition.planID = planID;
+	if (state) condition.state = Number(state);
 
-	const orders = await Order.getList(condition, { skip, limit }).exec().catch(error => ctx.customResponse.error(error.message));
+	const orders = await Order.getList(condition, { skip: Number(skip), limit: Number(limit) }).exec().catch(error => ctx.customResponse.error(error.message));
 
 	if (orders === undefined) return;
 
@@ -77,7 +82,6 @@ router.get('user/:userID/orders', accountAuth.user, async function(ctx, next) {
 	});
 	ctx.customResponse.success(result);
 });
-
 
 // 创建订单
 router.post('orders', accountAuth.user,
