@@ -106,7 +106,7 @@ router.post('orders', accountAuth.user,
 			name,
 			planID,
 			userID: user._id,
-			state: 1,
+			state: 0,
 			createDate: +new Date(),
 			amount: plan.price
 		}).catch(error => ctx.customResponse.error(error.message));
@@ -127,6 +127,36 @@ router.post('orders', accountAuth.user,
 		]));
 	}
 );
+
+/**
+ * 删除订单
+ * 1、仅超级管理员以及订单所属者可操作
+ * 2、仅可删除未付款和过期状态的订单
+ */
+router.delete('order/:orderNo', accountAuth.user, async function(ctx, next) {
+	const user = ctx.session.user;
+
+	const orderNo = ctx.params.orderNo;
+
+	// 获取订单详细信息
+	const order = await Order.get({ No: orderNo }).catch(error => ctx.customResponse.error(error.message));
+
+	if (order === undefined) return;
+
+	if (!order) return ctx.customResponse.error('订单不存在');
+
+	if (order.userID !== user._id && user.role !== G.accountRoles.superAdmin) {
+		return ctx.customResponse.error('权限不足');
+	}
+
+	if (order.state === 1) {
+		return ctx.customResponse.error('无法删除已付款的订单数据');
+	}
+
+	await Order.update({ No: orderNo }, { state: 100 }).then(() => {
+		ctx.customResponse.success('删除成功');
+	}).catch(error => ctx.customResponse.error(error.message));
+});
 
 // 创建订单编号，确保唯一性
 function createOrderNo() {
