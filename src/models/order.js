@@ -20,7 +20,7 @@ const schema = new Schema({
 	payment: Number, // 实付金额
 	paymentDate: Number, // 付款时间
 	description: String, // 订单描述（付款记录）
-	state: Number // 订单状态 0:未付款 1:已付款 2:过期
+	state: Number // 订单状态 0:未付款 1:已付款 2:过期 100:已删除
 }, { collection: 'orders' });
 
 
