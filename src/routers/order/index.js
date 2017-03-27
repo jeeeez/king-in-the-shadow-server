@@ -129,6 +129,29 @@ router.post('orders', accountAuth.user,
 );
 
 /**
+ * 获取订单信息
+ * 仅超级管理员以及订单所属者可操作
+ */
+router.get('order/:orderNo', accountAuth.user, async function(ctx, next) {
+	const user = ctx.session.user;
+	const orderNo = ctx.params.orderNo;
+
+	try {
+		// 获取订单详细信息
+		const order = await Order.get({ No: orderNo });
+		if (!order) return ctx.customResponse.error('订单不存在');
+
+		if (order.userID !== user._id && user.role !== G.accountRoles.superAdmin) {
+			return ctx.customResponse.error('权限不足');
+		}
+
+		ctx.customResponse.success(order);
+	} catch (error) {
+		ctx.customResponse.error(error.message)
+	}
+});
+
+/**
  * 删除订单
  * 1、仅超级管理员以及订单所属者可操作
  * 2、仅可删除未付款和过期状态的订单
