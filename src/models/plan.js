@@ -14,7 +14,8 @@ const schema = new Schema({
 	name: String, // 套餐名称
 	price: Number, // 套餐价格
 	month: Number, // 套餐时间（月）
-	state: Boolean // 套餐状态
+	state: Boolean, // 套餐状态
+	description: String // 套餐描述
 }, { collection: 'plans' });
 
 

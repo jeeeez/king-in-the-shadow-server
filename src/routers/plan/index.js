@@ -37,7 +37,9 @@ router.get('plans', accountAuth.user, async function(ctx, next) {
 			id: plan._id,
 			name: plan.name,
 			price: plan.price,
-			state: plan.state
+			state: plan.state,
+			month: plan.month,
+			description: plan.description
 		};
 	});
 	ctx.customResponse.success(resultPlans);
@@ -52,7 +54,7 @@ router.post('plans',
 	async function(ctx, next) {
 		const user = ctx.session.user;
 
-		const { name, price, month, state = true } = ctx.request.body;
+		const { name, price, month, description, state = true } = ctx.request.body;
 
 
 		// 判断是否已有同名或相同IP的服务器
@@ -61,14 +63,15 @@ router.post('plans',
 			return ctx.customResponse.error('已有相同名称的套餐存在，不可重复添加');
 		}
 
-		const plan = await Plan.create({ name, price, month, state }).catch(error => ctx.customResponse.error(error.message));
+		const plan = await Plan.create({ name, price, month, state, description }).catch(error => ctx.customResponse.error(error.message));
 
 		ctx.customResponse.success({
 			id: plan._id,
 			name: plan.name,
 			price: plan.price,
 			month: plan.month,
-			state: plan.state
+			state: plan.state,
+			description: plan.description
 		});
 	}
 );
@@ -85,7 +88,7 @@ router.put('plan/:planId', accountAuth.superAdmin,
 
 		const updateObj = {};
 		Object.keys(ctx.request.body).forEach(curr => {
-			if (~['name', 'price', 'month', 'state'].indexOf(curr)) {
+			if (~['name', 'price', 'month', 'state', 'description'].indexOf(curr)) {
 				updateObj[curr] = ctx.request.body[curr];
 			}
 		});
