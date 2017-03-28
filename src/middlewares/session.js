@@ -46,7 +46,14 @@ export default (ctx, next) => {
 
 			ctx.session.token = generateToken();
 			SESSIONS[ctx.session.token] = {
-				user,
+				user: {
+					id: user._id + '',
+					auth: user.auth,
+					createDate: user.createDate,
+					email: user.email,
+					port: user.port,
+					role: user.role
+				},
 				date: +new Date()
 			};
 		}

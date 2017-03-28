@@ -26,7 +26,7 @@ router.put('account/update', accountAuth.user, async function(ctx, next) {
 
 	if (newPassword) updateObj.password = md5(newPassword);
 
-	const result = await User.update({ _id: user._id }, updateObj).catch(error => {
+	const result = await User.update({ _id: user.id }, updateObj).catch(error => {
 		return ctx.customResponse.error(error.message);
 	});
 	if (result === undefined) return;

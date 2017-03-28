@@ -36,7 +36,7 @@ router.post('account/login',
 		ctx.session.user = user;
 
 		ctx.customResponse.success({
-			id: user._id,
+			id: user.id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
