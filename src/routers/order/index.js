@@ -10,6 +10,7 @@ import G from '../../constants/index';
 import router from '../router';
 
 import objFilter from '../../services/object-filter';
+import PaymentService from '../../services/payment';
 
 import Plan from '../../models/plan';
 import Order from '../../models/order';
@@ -46,13 +47,13 @@ router.get('orders', accountAuth.user, async function(ctx, next) {
 });
 
 // 用户的订单列表
-router.get('user/:userID/orders', accountAuth.user, async function(ctx, next) {
+router.get('users/:userID/orders', accountAuth.user, async function(ctx, next) {
 	const userID = ctx.params.userID;
 	const user = ctx.session.user;
 
 	// 普通、VIP用户仅能看到自己的订单
 	if ((user.role === G.accountRoles.member || user.role === G.accountRoles.VIP) &&
-		user._id !== userID) {
+		user.id !== userID) {
 		return ctx.customResponse.error('权限不足');
 	}
 
@@ -105,7 +106,7 @@ router.post('orders', accountAuth.user,
 			No,
 			name,
 			planID,
-			userID: user._id,
+			userID: user.id,
 			state: 0,
 			createDate: +new Date(),
 			amount: plan.price
@@ -132,7 +133,7 @@ router.post('orders', accountAuth.user,
  * 获取订单信息
  * 仅超级管理员以及订单所属者可操作
  */
-router.get('order/:orderNo', accountAuth.user, async function(ctx, next) {
+router.get('orders/:orderNo', accountAuth.user, async function(ctx, next) {
 	const user = ctx.session.user;
 	const orderNo = ctx.params.orderNo;
 
@@ -141,7 +142,7 @@ router.get('order/:orderNo', accountAuth.user, async function(ctx, next) {
 		const order = await Order.get({ No: orderNo });
 		if (!order) return ctx.customResponse.error('订单不存在');
 
-		if (order.userID !== user._id && user.role !== G.accountRoles.superAdmin) {
+		if (order.userID !== user.id && user.role !== G.accountRoles.superAdmin) {
 			return ctx.customResponse.error('权限不足');
 		}
 
@@ -156,7 +157,7 @@ router.get('order/:orderNo', accountAuth.user, async function(ctx, next) {
  * 1、仅超级管理员以及订单所属者可操作
  * 2、仅可删除未付款和过期状态的订单
  */
-router.delete('order/:orderNo', accountAuth.user, async function(ctx, next) {
+router.delete('orders/:orderNo', accountAuth.user, async function(ctx, next) {
 	const user = ctx.session.user;
 
 	const orderNo = ctx.params.orderNo;
@@ -168,7 +169,7 @@ router.delete('order/:orderNo', accountAuth.user, async function(ctx, next) {
 
 	if (!order) return ctx.customResponse.error('订单不存在');
 
-	if (order.userID !== user._id && user.role !== G.accountRoles.superAdmin) {
+	if (order.userID !== user.id && user.role !== G.accountRoles.superAdmin) {
 		return ctx.customResponse.error('权限不足');
 	}
 
@@ -179,6 +180,36 @@ router.delete('order/:orderNo', accountAuth.user, async function(ctx, next) {
 	await Order.update({ No: orderNo }, { state: 100 }).then(() => {
 		ctx.customResponse.success('删除成功');
 	}).catch(error => ctx.customResponse.error(error.message));
+});
+
+
+/**
+ * 创建订单的支付链接
+ */
+router.post('orders/:orderNo/payment', accountAuth.user, async function(ctx, next) {
+	const user = ctx.session.user;
+	const orderNo = ctx.params.orderNo;
+
+	try {
+		// 获取订单详细信息
+		const order = await Order.get({ No: orderNo });
+		if (!order) return ctx.customResponse.error('订单不存在');
+
+
+		if (order.userID !== user.id) {
+			return ctx.customResponse.error('权限不足', 401);
+		}
+
+		const paymentURL = await PaymentService.create({
+			subject: 'HAHA',
+			out_trade_no: '70501111111S001111119',
+			total_amount: '200.00'
+		});
+
+		ctx.customResponse.success(paymentURL);
+	} catch (error) {
+		ctx.customResponse.error(error.message)
+	}
 });
 
 // 创建订单编号，确保唯一性

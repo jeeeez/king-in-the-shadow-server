@@ -39,7 +39,7 @@ const params = {
 	timestamp: '2017-03-08 21:10:50',
 	version: '1.0',
 	biz_content: {
-		"subject": "HAHA",
+		"subject": "HAHA订单",
 		"out_trade_no": "70501111111S001111119",
 		"total_amount": '9.00',
 		"product_code": "QUICK_WAP_PAY"
@@ -68,7 +68,7 @@ Object.keys(params).forEach(function(key) {
 	} else if (key === 'biz_content') {
 		const content = {};
 		Object.keys(params.biz_content).forEach(function(k) {
-			content[k] = encodeURI(params.biz_content[k]);
+			content[k] = params.biz_content[k]; //encodeURI(params.biz_content[k]);
 		});
 		query.biz_content = JSON.stringify(content);
 	} else {
@@ -76,7 +76,7 @@ Object.keys(params).forEach(function(key) {
 	}
 });
 
-// const postData = qs.stringify(query);
+console.log(query);
 
 const postData = qs.stringify(query);
 console.log(postData);

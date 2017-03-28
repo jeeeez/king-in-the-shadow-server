@@ -13,7 +13,7 @@ router.get('account/invitation-codes', accountAuth.user, async function(ctx, nex
 	const todayStart = +new Date(today.getFullYear(), today.getMonth(), today.getDate());
 	const todayEnd = todayStart + 1 * 24 * 60 * 60 * 1000 - 1;
 	const invitationCodes = await InvitationCode.getList({
-		inviterId: user._id,
+		inviterId: user.id,
 		createDate: { $gt: todayStart, $lt: todayEnd }
 	}).catch(error => ctx.customResponse.error(error.message));
 
@@ -40,7 +40,7 @@ router.post('account/invitation-codes', accountAuth.user, async function(ctx, ne
 	const todayEnd = todayStart + 1 * 24 * 60 * 60 * 1000 - 1;
 
 	const count = await InvitationCode.count({
-		inviterId: user._id,
+		inviterId: user.id,
 		createDate: { $gt: todayStart, $lt: todayEnd }
 	}).catch(error => ctx.customResponse.error(error.message));
 
@@ -53,7 +53,7 @@ router.post('account/invitation-codes', accountAuth.user, async function(ctx, ne
 	const codeEntity = InvitationCode.create({
 		code,
 		createDate,
-		inviterId: user._id,
+		inviterId: user.id,
 		state: 1
 	}).catch(error => ctx.customResponse.error(error.message));
 

@@ -52,7 +52,7 @@ router.post('account/register',
 		if (invitationCode) {
 			await InvitationCodeModel.update({ code: invitationCode }, {
 				state: 0,
-				inviteeId: user._id,
+				inviteeId: user.id,
 				consumeDate: +new Date()
 			}).catch(error => ctx.customResponse.error(error.message));
 		}
@@ -65,7 +65,7 @@ router.post('account/register',
 		ctx.session.user = user;
 
 		ctx.customResponse.success({
-			id: user._id,
+			id: user.id,
 			email: user.email,
 			createDate: user.createDate,
 			port: user.port,
@@ -97,7 +97,7 @@ router.get('account/:signature/validate', async function(ctx, next) {
 	// 随机 VPN 密码
 	const auth = generateRamdomString(8);
 
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		port,
 		auth,
 		validated: true,
