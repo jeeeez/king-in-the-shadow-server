@@ -56,7 +56,6 @@ router.post('plans',
 
 		const { name, price, month, description, state = true } = ctx.request.body;
 
-
 		// 判断是否已有同名或相同IP的服务器
 		const count = await Plan.count({ name }).catch(error => ctx.customResponse.error(error.message));
 		if (count > 0) {
