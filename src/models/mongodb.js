@@ -14,7 +14,15 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect(config.mongodb, {
 	user: DB_USERNAME,
-	pass: DB_PASSWORD
+	pass: DB_PASSWORD,
+	server: {
+		socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 },
+		// sets how many times to try reconnecting
+		reconnectTries: Number.MAX_VALUE,
+		// sets the delay between every retry (milliseconds)
+		reconnectInterval: 1000
+	},
+	replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
 });
 
 const db = mongoose.connection;
