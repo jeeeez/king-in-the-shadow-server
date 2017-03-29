@@ -39,10 +39,10 @@ const PARAMS = {
 	timestamp: '2017-03-08 21:10:50',
 	version: '1.0',
 	biz_content: {
-		"subject": "HAHA",
-		"out_trade_no": "70501111111S001111119",
-		"total_amount": '9.00',
-		"product_code": "QUICK_WAP_PAY"
+		subject: 'HAHA',
+		out_trade_no: '70501111111S001111119',
+		total_amount: '9.00',
+		product_code: 'QUICK_WAP_PAY'
 	}
 };
 
@@ -54,7 +54,7 @@ const create = ({ subject, out_trade_no, total_amount }) => {
 			subject,
 			out_trade_no,
 			total_amount,
-			product_code: 'QUICK_WAP_PAY'
+			product_code: 'QUICK_MSECURITY_PAY'
 		}
 	};
 
@@ -62,7 +62,7 @@ const create = ({ subject, out_trade_no, total_amount }) => {
 	// 将参数按参数名从小到大排序，生成[key=value]格式的字符串并用&连接
 	const signatureKey = Object.keys(params).sort().map(key => {
 		const value = key === 'biz_content' ? JSON.stringify(params[key]) : params[key];
-		return `${key}=${value}`
+		return `${key}=${value}`;
 	}).join('&');
 	const sign = crypto.createSign('RSA-SHA256');
 	sign.update(signatureKey);
