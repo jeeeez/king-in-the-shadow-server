@@ -52,7 +52,8 @@ export default (ctx, next) => {
 					createDate: user.createDate,
 					email: user.email,
 					port: user.port,
-					role: user.role
+					role: user.role,
+					password: user.password
 				},
 				date: +new Date()
 			};
