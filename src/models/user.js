@@ -1,3 +1,4 @@
+import G from '../constants';
 import mongoose from './mongodb';
 import Decorator from './decorator';
 
@@ -12,7 +13,7 @@ const schema = new Schema({
 	validateDate: Number,
 	port: Number,
 	auth: String,
-	role: { type: String, default: 'member' }
+	role: { type: String, default: G.accountRoles.member }
 }, { collection: 'users' });
 
 
