@@ -8,8 +8,8 @@ const schema = new Schema({
 	port: Number,
 	createDate: Number,
 	nodeId: String,
-	input: Number,
-	output: Number
+	input: { type: Number, default: 0 },
+	output: { type: Number, default: 0 }
 }, { collection: 'bandwidth' });
 
 

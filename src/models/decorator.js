@@ -16,6 +16,13 @@ const create = Constructor => {
 	};
 };
 
+// inset one or more documents and returns a document containing the status of all inserts
+const insert = Constructor => {
+	return target => {
+		target.prototype.insert = data => Constructor.insert(data);
+	};
+};
+
 const save = Constructor => {
 	return target => {
 		target.prototype.save = params => new Constructor(params).save();
