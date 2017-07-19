@@ -66,8 +66,7 @@ export default (ctx, next) => {
 // 生成token，确保唯一性
 const generateToken = () => {
 	const token = uuid.v4();
-	if (SESSIONS[token]) {
-		return generateToken();
-	}
-	return token;
+	if (!SESSIONS[token]) return token;
+
+	return generateToken();
 };
