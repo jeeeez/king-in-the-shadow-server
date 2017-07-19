@@ -1,6 +1,6 @@
 /**
  * 注册邀请码
- * @authors Picker Lee (https://github.com/pickerlee)
+ * @authors Picker Lee (https://github.com/jeezlee)
  * @email   450994392@qq.com
  * @date    2016-10-27 16:10:55
  */

@@ -1,6 +1,6 @@
 /**
  * 增/删/改/查 shadowrocks 用户
- * @authors Picker Lee (https://github.com/pickerlee)
+ * @authors Picker Lee (https://github.com/jeezlee)
  * @email   450994392@qq.com
  * @date    2016-10-08 14:48:15
  */
