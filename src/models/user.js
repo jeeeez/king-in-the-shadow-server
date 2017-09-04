@@ -11,19 +11,19 @@ const schema = new Schema({
 	createDate: Number,
 	validated: Boolean,
 	validateDate: Number,
+	expireDate: Number,
 	port: Number,
 	auth: String,
-	role: { type: String, default: G.accountRoles.member }
-}, { collection: 'users' });
+	role: {
+		type: String,
+		default: G.accountRoles.member
+	}
+}, {
+	collection: 'users'
+});
 
 
 const UserModel = mongoose.model('user', schema);
 
-@Decorator.count(UserModel)
-@Decorator.instance(UserModel)
-@Decorator.create(UserModel)
-@Decorator.get(UserModel)
-@Decorator.update(UserModel)
-@Decorator.getList(UserModel)
 @Decorator.ALL(UserModel)
 export default new class User {}();

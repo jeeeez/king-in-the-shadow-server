@@ -80,7 +80,8 @@ router.post('account/register',
 			createDate: user.createDate,
 			port: user.port,
 			auth: user.auth,
-			token: ctx.session.token
+			token: ctx.session.token,
+			expire: ctx.session.expire
 		});
 	});
 

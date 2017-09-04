@@ -45,3 +45,26 @@ router.put('account/update', accountAuth.user, async function(ctx, next) {
 		ctx.customResponse.success('虽然我不知道你要修改什么鬼，但是看上去是成了！');
 	}
 });
+
+/**
+ * 批量修改用户数据
+ * 该接口仅超级管理员能使用
+ * 1、批量修改用户到期时间（此接口慎用）
+ */
+router.put('accounts/update', accountAuth.superAdmin, async function (ctx, next) {
+	try {
+		const { expireDate } = ctx.request.body;
+
+		const formData = {};
+		if (expireDate) {
+			formData.expireDate = expireDate;
+		}
+
+		await User.updateAll({}, formData);
+
+		ctx.customResponse.success();
+	} catch (error) {
+		return ctx.customResponse.error(error.message);
+	}
+
+});

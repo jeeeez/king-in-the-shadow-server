@@ -69,7 +69,8 @@ const initializeServer = serverId => {
 		if (!server) return Promise.reject({ message: '服务器不存在' });
 		if (!server.state) return Promise.reject({ message: '服务器不可用' });
 
-		return User.getList({}).then(users => {
+		// 仅为有效期内的用户配置 VPN 账户
+		return User.getList({ expireDate: { $gt: Date.now() } }).then(users => {
 			const config = {};
 			users.forEach(user => {
 				config[user.port] = user.auth;

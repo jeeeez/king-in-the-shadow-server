@@ -42,6 +42,7 @@ router.post('account/login',
 			port: user.port,
 			auth: user.auth,
 			role: user.role,
-			token: ctx.session.token
+			token: ctx.session.token,
+			expire: ctx.session.expire
 		});
 	});

@@ -14,6 +14,7 @@ router.get('account/check', async function(ctx, next) {
 		createDate: user.createDate,
 		port: user.port,
 		auth: user.auth,
-		role: user.role
+		role: user.role,
+		expire: user.expire
 	});
 });
