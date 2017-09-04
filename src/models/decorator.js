@@ -35,6 +35,14 @@ const update = Constructor => {
 	};
 };
 
+const updateAll = Constructor => {
+	return target => {
+		target.prototype.updateAll = (params, data) => Constructor.update(params, data, {
+			multi: true
+		});
+	};
+};
+
 const get = Constructor => {
 	return target => {
 		target.prototype.get = params => Constructor.findOne(params);
@@ -52,10 +60,23 @@ const ALL = Constructor => {
 		instance(Constructor)(target);
 		count(Constructor)(target);
 		create(Constructor)(target);
+		insert(Constructor)(target);
 		save(Constructor)(target);
 		update(Constructor)(target);
+		updateAll(Constructor)(target);
 		get(Constructor)(target);
 		getList(Constructor)(target);
 	};
 };
-export default { instance, count, create, save, update, get, getList, ALL };
+export default {
+	instance,
+	count,
+	create,
+	insert,
+	save,
+	update,
+	updateAll,
+	get,
+	getList,
+	ALL
+};
