@@ -22,7 +22,7 @@ const sender = (toEmail, subject, html) => {
 	const opts = {
 		from: '非匠<noreply@fjvpn.com>',
 		to: toEmail,
-		bcc: 'PickerLee<450994392@qq.com',
+		bcc: 'JeezLee<450994392@qq.com',
 		subject,
 		html
 	};
