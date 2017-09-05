@@ -16,16 +16,14 @@ const schema = new Schema({
 	inviteeId: String, // 被邀请人 ID
 	state: Number, // 邀请码状态
 	createDate: Number, // 邀请码创建时间
-	consumeDate: Number // 使用时间
-}, { collection: 'invitationCodes' });
+	consumeDate: Number, // 使用时间
+	type: String // 邀请码类型 [YEAR,SEASON,MONTH,WEEK,DAY]
+}, {
+	collection: 'invitationCodes'
+});
 
 
 const InvitationCodeModel = mongoose.model('invitationCode', schema);
 
-@Decorator.count(InvitationCodeModel)
-@Decorator.instance(InvitationCodeModel)
-@Decorator.create(InvitationCodeModel)
-@Decorator.get(InvitationCodeModel)
-@Decorator.update(InvitationCodeModel)
-@Decorator.getList(InvitationCodeModel)
+@Decorator.ALL(InvitationCodeModel)
 export default new class InvitationCode {}();

@@ -53,7 +53,8 @@ export default (ctx, next) => {
 					email: user.email,
 					port: user.port,
 					role: user.role,
-					password: user.password
+					password: user.password,
+					expireDate: user.expireDate
 				},
 				date: +new Date()
 			};
