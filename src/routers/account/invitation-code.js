@@ -1,7 +1,9 @@
 import router from '../router';
 import uuid from 'node-uuid';
 import accountAuth from '../../middlewares/auth';
+import User from '../../models/user';
 import InvitationCode from '../../models/invitation-code';
+import ParameterValidator from '../../middlewares/parameter-valid';
 
 import G from '../../constants/index';
 
@@ -38,7 +40,7 @@ router.get('account/invitation-codes', accountAuth.user, async function (ctx, ne
 
 
 // 创建邀请码
-router.post('account/invitation-codes', accountAuth.user, async function (ctx, next) {
+router.post('account/invitation-codes', accountAuth.superAdmin, async function (ctx, next) {
 	try {
 		const user = ctx.session.user;
 

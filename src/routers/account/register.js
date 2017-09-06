@@ -156,12 +156,15 @@ router.post('account/activate',
 
 		// 验证邀请码的有效性
 		const invitationCode = await InvitationCodeModel.get({
-			code,
-			state: 1
+			code
 		});
 
 		if (!invitationCode) {
 			return ctx.customResponse.error('无效的激活码');
+		}
+
+		if (!invitationCode.state) {
+			return ctx.customResponse.error('激活码已被使用');
 		}
 
 		// 更新邀请码状态
@@ -181,7 +184,7 @@ router.post('account/activate',
 		}, {
 			expireDate
 		}).then(() => {
-			ctx.customResponse.success('激活成功');
+			ctx.customResponse.success(invitationCode);
 
 			// 为用户开通 shadowrocks 账户
 			ShadowrocksService.updateOnePort(user.port, user.auth);
