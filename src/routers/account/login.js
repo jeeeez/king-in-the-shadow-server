@@ -1,6 +1,8 @@
 import router from '../router';
 
-import { md5 } from '../../services/hash';
+import {
+	md5
+} from '../../services/hash';
 
 import User from '../../models/user';
 import ParameterValidator from '../../middlewares/parameter-valid';
@@ -8,41 +10,59 @@ import ParameterValidator from '../../middlewares/parameter-valid';
 // 用户登录
 router.post('account/login',
 	ParameterValidator.body({
-		email: { required: '邮箱不能为空！', notEmpty: '邮箱不能为空！', email: '邮箱格式不正确！' },
-		password: { required: '密码不能为空！', notEmpty: '密码不能为空！', pattern: /^[\S]{6,12}$/ }
-	}),
-	async function(ctx, next) {
-		const { email, password } = ctx.request.body;
-
-		const count = await User.count({ email }).catch(error => {
-			return ctx.customResponse.error(error.message);
-		});
-
-		if (count === undefined) return;
-
-		if (count === 0) {
-			return ctx.customResponse.error(`用户 ${email} 不存在`);
+		email: {
+			required: '邮箱不能为空！',
+			notEmpty: '邮箱不能为空！',
+			email: '邮箱格式不正确！'
+		},
+		password: {
+			required: '密码不能为空！',
+			notEmpty: '密码不能为空！',
+			pattern: /^[\S]{6,12}$/
 		}
+	}),
+	async function (ctx, next) {
+		try {
+			const {
+				email,
+				password
+			} = ctx.request.body;
 
-		const user = await User.get({ email, password: md5(password) }).catch(error => ctx.customResponse.error(error.message));
+			const count = await User.count({
+				email
+			});
 
-		if (user === undefined) return;
+			if (count === 0) {
+				return ctx.customResponse.error(`用户 ${email} 不存在`);
+			}
 
-		if (!user) return ctx.customResponse.error(`密码不正确！`);
+			const user = await User.get({
+				email,
+				password: md5(password)
+			});
 
-		if (!user.validated) return ctx.customResponse.error(`账户邮箱未验证`);
+			if (!user) {
+				return ctx.customResponse.error(`密码不正确！`);
+			}
 
-		// 登录设置用户会话
-		ctx.session.user = user;
+			if (!user.validated) {
+				return ctx.customResponse.error(`账户邮箱未验证`);
+			}
 
-		ctx.customResponse.success({
-			id: user.id,
-			email: user.email,
-			createDate: user.createDate,
-			port: user.port,
-			auth: user.auth,
-			role: user.role,
-			token: ctx.session.token,
-			expire: ctx.session.expire
-		});
+			// 登录设置用户会话
+			ctx.session.user = user;
+
+			ctx.customResponse.success({
+				id: user.id,
+				email: user.email,
+				createDate: user.createDate,
+				port: user.port,
+				auth: user.auth,
+				role: user.role,
+				token: ctx.session.token,
+				expireDate: user.expireDate
+			});
+		} catch (error) {
+			ctx.customResponse.error(error.message);
+		}
 	});

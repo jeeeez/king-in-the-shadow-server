@@ -85,7 +85,7 @@ router.post('account/register',
 				port: user.port,
 				auth: user.auth,
 				token: ctx.session.token,
-				expire: ctx.session.expire
+				expireDate: ctx.session.expireDate
 			});
 		} catch (error) {
 			ctx.customResponse.error(error.message);

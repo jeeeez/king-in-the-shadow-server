@@ -19,6 +19,7 @@ export default (ctx, next) => {
 			if (session) {
 				// 每次使用session都会重新激活
 				session.date = +new Date();
+
 				return session.user;
 			}
 
