@@ -1,6 +1,6 @@
 import router from '../router';
 import User from '../../models/user';
-// import accountAuth from '../../middlewares/auth';
+import ResponseUtils from '../../utils/response';
 
 // 查看用户登录状态
 router.get('account/check', async function(ctx, next) {
@@ -8,13 +8,6 @@ router.get('account/check', async function(ctx, next) {
 	const user = ctx.session.user;
 	if (!user) return ctx.customResponse.success('未登录');
 
-	ctx.customResponse.success({
-		id: user.id,
-		email: user.email,
-		createDate: user.createDate,
-		port: user.port,
-		auth: user.auth,
-		role: user.role,
-		expireDate: user.expireDate
-	});
+	const responseKeys = ['id', 'email', 'createDate', 'port', 'auth', 'role', 'expireDate'];
+	ctx.customResponse.success(ResponseUtils.entity(user, responseKeys));
 });

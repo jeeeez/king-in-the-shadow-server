@@ -6,6 +6,7 @@
  */
 
 import router from '../router';
+import ResponseUtils from '../../utils/response';
 
 import User from '../../models/user';
 import accountAuth from '../../middlewares/auth';
@@ -15,19 +16,15 @@ import ParameterValidator from '../../middlewares/parameter-valid';
 
 // 获取当前注册用户列表（所有）
 router.get('users', accountAuth.admin, async function(ctx, next) {
-	const users = await User.getList().catch(error => ctx.customResponse.error(error.message));
-	if (!users) return;
+	try {
+		const users = await User.getList();
 
-	ctx.customResponse.success(users.map(user => {
-		return {
-			id: user.id,
-			email: user.email,
-			validated: user.validated,
-			createDate: user.createDate,
-			validateDate: user.validateDate,
-			port: user.port,
-			auth: user.auth,
-			role: user.role
-		};
-	}));
+		// 响应数据集
+		const responseKeys = ['id', 'email', 'validated', 'createDate', 'validateDate', 'port', 'auth', 'role', 'expireDate'];
+
+		ctx.customResponse.success(ResponseUtils.map(users, responseKeys));
+
+	} catch (error) {
+		ctx.customResponse.error(error.message);
+	}
 });
