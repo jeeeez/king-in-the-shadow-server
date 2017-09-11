@@ -19,9 +19,9 @@ router.post('nodes/reload', internalAuth, async function(ctx, next) {
 			return ShadowrocksService.initializeServer(node.id);
 		}));
 
-		const message = `一下 ${nodes.length} 台服务器初始化成功` + nodes.map(node => {
-			return node.host;
-		}).join('</br>');
+		const message = `<p>一下 ${nodes.length} 台服务器初始化成功</p>` + nodes.map(node => {
+			return `<p>${node.host}<p>`;
+		}).join('');
 
 		EmailService.sender('li2274221@gmail.com', 'VPN service reload success', message);
 		ctx.customResponse.success('初始化成功！');
