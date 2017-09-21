@@ -23,12 +23,12 @@ router.post('nodes/reload', internalAuth, async function(ctx, next) {
 			return `<p>${node.host}<p>`;
 		}).join('');
 
-		EmailService.sender('li2274221@gmail.com', 'VPN service reload success', message);
+		EmailService.sender('w2274224@vip.qq.com', 'VPN service reload success', message);
 		ctx.customResponse.success('初始化成功！');
 
 	} catch (error) {
 		ctx.customResponse.error(error.message);
 
-		EmailService.sender('li2274221@gmail.com', 'VPN service reload failed', error.message);
+		EmailService.sender('w2274224@vip.qq.com', 'VPN service reload failed', error.message);
 	}
 });
