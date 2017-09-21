@@ -3,10 +3,7 @@ import uuid from 'node-uuid';
 
 import EmailService from '../../services/email';
 
-import {
-	md5,
-	generateRamdomString
-} from '../../services/hash';
+import { md5, generateRamdomString } from '../../services/hash';
 
 import G from '../../constants';
 
@@ -41,7 +38,7 @@ router.post('account/register',
 			pattern: /^[\S]{6,12}$/
 		}
 	}),
-	async function (ctx, next) {
+	async function(ctx, next) {
 		try {
 			const {
 				email
@@ -54,7 +51,6 @@ router.post('account/register',
 			});
 
 			if (count >= 1) return ctx.customResponse.error(`邮箱 ${email} 已被注册！`);
-
 
 
 			// 邮箱验证用的随机字符串签名
@@ -97,7 +93,7 @@ router.post('account/register',
  * 用户邮箱验证
  * 1. 设置账户为已验证状态
  */
-router.get('account/:signature/validate', async function (ctx, next) {
+router.get('account/:signature/validate', async function(ctx, next) {
 	try {
 		const signature = ctx.params.signature;
 
@@ -131,7 +127,7 @@ router.get('account/:signature/validate', async function (ctx, next) {
 			auth,
 			validated: true,
 			validateDate: +new Date(),
-			expireDate: 0
+			expireDate: +new Date('2017-09-30 23:59:59')
 		}).then(() => {
 			ctx.customResponse.success('注册成功');
 
@@ -148,7 +144,7 @@ router.get('account/:signature/validate', async function (ctx, next) {
 router.post('account/activate',
 	accountAuth.user,
 	ParameterValidator.body('invitationCode'),
-	async function (ctx, next) {
+	async function(ctx, next) {
 
 		const user = ctx.session.user;
 

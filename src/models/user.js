@@ -7,7 +7,13 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
 	email: String,
 	password: String,
+
+	// 注册用的验证码
 	signature: String,
+
+	// 忘记密码用的验证码
+	retrieveCode: String,
+
 	createDate: Number,
 	validated: Boolean,
 	validateDate: Number,

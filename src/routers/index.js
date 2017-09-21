@@ -5,6 +5,7 @@ import './account/register';
 import './account/logout';
 import './account/check';
 import './account/update';
+import './account/forget';
 import './account/invitation-code';
 
 import './otherwise/qrcode';
