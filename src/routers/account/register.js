@@ -141,51 +141,55 @@ router.get('account/:signature/validate', async function(ctx, next) {
 });
 
 
+/**
+ * 用户使用激活码
+ */
 router.post('account/activate',
 	accountAuth.user,
 	ParameterValidator.body('invitationCode'),
 	async function(ctx, next) {
 
-		const user = ctx.session.user;
+		try {
 
-		const code = ctx.request.body.invitationCode;
+			const user = ctx.session.user;
 
-		// 验证邀请码的有效性
-		const invitationCode = await InvitationCodeModel.get({
-			code
-		});
+			const code = ctx.request.body.invitationCode;
 
-		if (!invitationCode) {
-			return ctx.customResponse.error('无效的激活码');
+			// 验证邀请码的有效性
+			const invitationCode = await InvitationCodeModel.get({ code });
+
+			if (!invitationCode) {
+				return ctx.customResponse.error('无效的激活码');
+			}
+
+			if (!invitationCode.state) {
+				return ctx.customResponse.error('激活码已被使用');
+			}
+
+			// 更新邀请码状态
+			await InvitationCodeModel.update({ code }, {
+				state: 0,
+				inviteeId: user.id,
+				consumeDate: +new Date()
+			});
+
+			const lastExpireDate = Math.max(user.expireDate || 0, Date.now());
+			const expireDate = lastExpireDate + getMilliseconds(invitationCode.type);
+
+
+			await User.update({ _id: user.id }, { expireDate })
+				.then(() => {
+					ctx.customResponse.success({ expireDate });
+					ctx.session.user.expireDate = expireDate;
+
+					// 为用户开通 shadowrocks 账户
+					if ((user.expireDate || 0) < Date.now()) {
+						ShadowrocksService.updateOnePort(user.port, user.auth);
+					}
+				});
+		} catch (error) {
+			ctx.customResponse.error(error.message);
 		}
-
-		if (!invitationCode.state) {
-			return ctx.customResponse.error('激活码已被使用');
-		}
-
-		// 更新邀请码状态
-		await InvitationCodeModel.update({
-			code
-		}, {
-			state: 0,
-			inviteeId: user.id,
-			consumeDate: +new Date()
-		});
-
-		const lastExpireDate = Math.max(user.expireDate || 0, Date.now());
-		const expireDate = lastExpireDate + getMilliseconds(invitationCode.type);
-
-		await User.update({
-			_id: user.id
-		}, {
-			expireDate
-		}).then(() => {
-			ctx.customResponse.success(invitationCode);
-
-			// 为用户开通 shadowrocks 账户
-			ShadowrocksService.updateOnePort(user.port, user.auth);
-		});
-
 	});
 
 // 根据激活码类型获取其毫秒数
@@ -193,18 +197,13 @@ function getMilliseconds(type) {
 	// 每日所持有的毫秒数
 	const millisecondsOfOneDay = 24 * 60 * 60 * 1000;
 
-	switch (type) {
-		case 'YEAR':
-			return 366 * millisecondsOfOneDay;
-		case 'SEASON':
-			return 3 * 31 * millisecondsOfOneDay;
-		case 'MONTH':
-			return 31 * millisecondsOfOneDay;
-		case 'WEEK':
-			return 7 * millisecondsOfOneDay;
-		case 'DAY':
-			return 1 * millisecondsOfOneDay;
-		default:
-			return 0;
-	}
+	const typeDays = {
+		YEAR: 366,
+		SEASON: 3 * 31,
+		MONTH: 31,
+		WEEK: 7,
+		DAY: 1
+	};
+
+	return (typeDays[type] || 0) * millisecondsOfOneDay;
 }
