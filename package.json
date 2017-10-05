@@ -1,6 +1,6 @@
 {
 	"name": "king-in-the-shadow",
-	"version": "4.0.0",
+	"version": "5.0.0",
 	"description": "ShadowKing 用户管理系统",
 	"main": "index.js",
 	"scripts": {
