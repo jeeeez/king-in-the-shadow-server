@@ -127,7 +127,7 @@ router.get('account/:signature/validate', async function(ctx, next) {
 			auth,
 			validated: true,
 			validateDate: +new Date(),
-			expireDate: +new Date('2017-09-30 23:59:59')
+			expireDate: +new Date('2017-12-31 23:59:59')
 		}).then(() => {
 			ctx.customResponse.success('注册成功');
 
